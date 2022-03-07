@@ -3,18 +3,8 @@
 #include <memory.h>
 #include <ctype.h>
 
-void assertString(const char *expected, char *got,
-                  char const *fileName, char const *funcName,
-                  int line) {
-    int x = strcmp(expected, got);
-    if (x) {
-        fprintf(stderr, " File %s\n", fileName);
-        fprintf(stderr, "%s - failed on line %d\n", funcName, line);
-        fprintf(stderr, " Expected : \"%s\"\n", expected);
-        fprintf(stderr, "Got: \"%s\"\n\n", got);
-    } else
-        fprintf(stderr, "%s - OK\n", funcName);
-}
+#define ASSERT_STRING(expected, got) assertString(expected, got, \
+__FILE__ , __FUNCTION__ , __LINE__ )
 
 
 size_t strlen_(const char *begin) {
@@ -52,29 +42,30 @@ char *findNonSpaceReverse(char *rbegin, const char *rend) {
     return rbegin;
 }
 
-char* findSpaceReverse(char *rbegin, const char *rend){
-        while (rbegin != rend && !isspace(*rbegin)){
-            rbegin--;
-        }
+char *findSpaceReverse(char *rbegin, const char *rend) {
+    while (rbegin != rend && !isspace(*rbegin)) {
+        rbegin--;
+    }
     return rbegin;
 }
-int strcmp ( const char * lhs , const char * rhs ){
+
+int strcmp(const char *lhs, const char *rhs) {
     if (*lhs != '\0' && *rhs != '\0' && *lhs == *rhs)
         return strcmp(++lhs, ++rhs);
     return *lhs - *rhs;
 }
 
-char *copy(const char *beginSource, const char *endSource, char *beginDestination){
+char *copy(const char *beginSource, const char *endSource, char *beginDestination) {
     long long distance = endSource - beginSource;
     memcpy(beginDestination, beginSource, distance);
 
     return beginDestination + distance;
 }
 
-char *copyIf(char *beginSource, const char *endSource, char *beginDestination, int (*f)(int)){
+char *copyIf(char *beginSource, const char *endSource, char *beginDestination, int (*f)(int)) {
     long long fDistance = 0;
     while (*beginSource != '\0' && beginSource != endSource)
-        if (f(*(beginSource++))){
+        if (f(*(beginSource++))) {
             memcpy(beginDestination++, beginSource - 1, sizeof(char));
             fDistance++;
         }
@@ -82,13 +73,34 @@ char *copyIf(char *beginSource, const char *endSource, char *beginDestination, i
     return beginDestination + fDistance;
 }
 
-char* copyIfReverse(char *rbeginSource, const char *rendSource, char *beginDestination, int (*f)(int)){
+char *copyIfReverse(char *rbeginSource, const char *rendSource, char *beginDestination, int (*f)(int)) {
     long long fDistance = rbeginSource - rendSource;
     while (rbeginSource != rendSource)
-        if (f(*(rbeginSource--))){
+        if (f(*(rbeginSource--))) {
             memcpy(beginDestination, rbeginSource + 1, sizeof(char));
             fDistance++;
         }
 
     return beginDestination + fDistance;
+}
+
+
+int strcmp_(const char *lhs, const char *rhs) {
+    while (*lhs && (*lhs == *rhs))
+        lhs++, rhs++;
+
+    return *lhs - *rhs;
+}
+
+
+void assertString(const char *expected, char *got,
+                  char const *fileName, char const *funcName,
+                  int line) {
+    if (strcmp_(expected, got)) {
+        fprintf(stderr, " File %s\n", fileName);
+        fprintf(stderr, "%s - failed on line %d\n", funcName, line);
+        fprintf(stderr, " Expected : \"%s \"\n", expected);
+        fprintf(stderr, "Got: \"%s\"\n\n", got);
+    } else
+        fprintf(stderr, "%s - OK\n", funcName);
 }

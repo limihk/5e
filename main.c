@@ -1,19 +1,14 @@
 #include <stdio.h>
 #include "libs/string/string_.h"
-
-
-void test1(){
-    char s[] = " zxc ";
-
-
-    printf("%s\n",);
-}
+#include "libs/string/tasks/removeExtraSpaces.h"
 
 
 
 int main() {
 
-test1();
+
+
+test_removeExtraSpaces();
 
     return 0;
 }
