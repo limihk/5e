@@ -9,6 +9,9 @@
 #include "replacingEachDigitWithSpaces.h"
 #include "searchFirstWord.h"
 #include "isWordsOrdered.h"
+#include "reverseWords.h"
+#include "countWordsPalindrome.h"
+#include "alternatingWordsFormTwoString.h"
 
 
 void allTestsTasks() {
@@ -19,6 +22,9 @@ void allTestsTasks() {
     test_replacingEachDigitWithSpaces();
     test_replace();
     test_isWordsOrdered();
+    test_reverseWords();
+    test_countWordsPalindrome();
+    test_alternatingWordsFormTwoString();
 }
 
 
