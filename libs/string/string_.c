@@ -1,13 +1,91 @@
-#include <stdio.h>
-#include "string_.h"
 #include <memory.h>
-#include <ctype.h>
+#include "string_.h"
+
+size_t strlen_(char *begin) {
+    char *end = begin;
+    while (*end != '\0')
+        end++;
+    return end - begin;
+}
+
+char *find(char *begin, const char *end, int ch) {
+    while (begin != end && *begin != ch)
+        begin++;
+
+    return begin;
+}
+
+char *findNonSpace(char *begin) {
+    char *end = begin;
+    while (*end != '\0' && isspace(*end))
+        end++;
+
+    return end;
+}
+
+char *findSpace(char *begin) {
+    char *end = begin;
+    while (*end != '\0' && !isspace(*end))
+        end++;
+
+    return end;
+}
+
+char *findNonSpaceReverse(char *rbegin, const char *rend) {
+    while (rbegin != rend && isspace(*rbegin))
+        rbegin--;
+
+    return rbegin;
+}
+
+char *findSpaceReverse(char *rbegin, const char *rend) {
+    while (rbegin != rend && !isspace(*rbegin))
+        rbegin--;
+
+    return rbegin;
+}
+
+int strcmp(const char *lhs, const char *rhs) {
+    while (*lhs != '\0' && (*lhs == *rhs)) {
+        lhs++;
+        rhs++;
+    }
+
+    return *lhs - *rhs;
+}
+
+char *copy(const char *beginSource, const char *endSource, char *beginDestination) {
+    memcpy(beginDestination, beginSource, endSource - beginSource);
+
+    return beginDestination + (endSource - beginSource);
+}
+
+char *copyIf(char *beginSource, const char *endSource, char *beginDestination, int (*f)(int)) {
+    while (beginSource != endSource) {
+        if (f(*beginSource)) {
+            *beginDestination = *beginSource;
+            beginDestination++;
+        }
+        beginSource++;
+    }
+    return beginDestination;
+}
+
+char *copyIfReverse(char *rbeginSource, const char *rendSource, char *beginDestination, int (*f)(int)) {
+    while (rbeginSource != rendSource) {
+        if (f(*rbeginSource)) {
+            *beginDestination = *rbeginSource;
+            beginDestination++;
+        }
+        rbeginSource--;
+    }
+    return beginDestination;
+}
 
 void assertString(const char *expected, char *got,
                   char const *fileName, char const *funcName,
                   int line) {
-    int x = strcmp(expected, got);
-    if (x) {
+    if (strcmp(expected, got) != 0) {
         fprintf(stderr, " File %s\n", fileName);
         fprintf(stderr, "%s - failed on line %d\n", funcName, line);
         fprintf(stderr, " Expected : \"%s\"\n", expected);
@@ -16,79 +94,80 @@ void assertString(const char *expected, char *got,
         fprintf(stderr, "%s - OK\n", funcName);
 }
 
+char *getEndOfString(char *str) {
+    while (*str != '\0')
+        str++;
 
-size_t strlen_(const char *begin) {
-    char *end = begin;
-    while (*end != '\0')
-        end++;
-    return end - begin;
+    return str;
 }
 
-char *find(char *begin, char *end, int ch) {
-    while (begin != end && *begin != ch)
-        begin++;
-    return begin;
+int getWord(char *beginSearch, WordDescriptor *word) {
+    word->begin = findNonSpace(beginSearch);
+    if (*word->begin == '\0')
+        return 0;
+
+    word->end = findSpace(word->begin);
+
+    return 1;
 }
 
-char *findNonSpace(char *begin) {
+//TODO: также возможно пересмотреть
+bool getWordReverse(char *rbegin, char *rend, WordDescriptor *word) {
+    word->end = findNonSpaceReverse(rbegin , rend) + 1;
+    if (word->end == rend)
+        return 0;
 
-    while (*begin != '\0' && isspace(*begin)) {
-        begin++;
+    word->begin = findSpaceReverse(word->end - 1, rend) + 1;
+
+    return 1;
+}
+
+int areWordsEqual(WordDescriptor w1, WordDescriptor w2) {
+    char *begin1 = w1.begin;
+    char *begin2 = w2.begin;
+    while (begin1 != w1.end - 1 && (*begin1 == *begin2))
+        begin1++, begin2++;
+
+    return *begin1 - *begin2;
+}
+
+void getBagOfWords(BagOfWords *bag, char *s) {
+    char *beginSearch = s;
+    bag->size = 0;
+
+    WordDescriptor word;
+    while (getWord(beginSearch, &word)) {
+        bag->words[bag->size] = word;
+
+        bag->size++;
+        beginSearch = word.end;
     }
-    return begin;
 }
 
-char *findSpace(char *begin) {
-    while (*begin != '\0' && !isspace(*begin)) {
+char *copyReverse(const char *rbeginSource, const char *rendSource, char *beginDestination) {
+    while (rbeginSource != rendSource) {
+        *beginDestination = *rbeginSource;
+        beginDestination++;
+        rbeginSource--;
+    }
+
+    return beginDestination;
+}
+
+void wordDescriptorToString(WordDescriptor word, char *destination) {
+    *copy(word.begin, word.end, destination) = '\0';
+}
+
+
+int isPalindrome(char *begin, char *end) {
+    end--;
+    while (end - begin > 0) {
+        if (*end != *begin)
+            return 0;
+
         begin++;
+        end--;
     }
-    return begin;
-}
 
-char *findNonSpaceReverse(char *rbegin, const char *rend) {
-    while (rbegin != rend && isspace(*rbegin)) {
-        rbegin--;
-    }
-    return rbegin;
-}
-
-char* findSpaceReverse(char *rbegin, const char *rend){
-        while (rbegin != rend && !isspace(*rbegin)){
-            rbegin--;
-        }
-    return rbegin;
-}
-int strcmp ( const char * lhs , const char * rhs ){
-    if (*lhs != '\0' && *rhs != '\0' && *lhs == *rhs)
-        return strcmp(++lhs, ++rhs);
-    return *lhs - *rhs;
-}
-
-char *copy(const char *beginSource, const char *endSource, char *beginDestination){
-    long long distance = endSource - beginSource;
-    memcpy(beginDestination, beginSource, distance);
-
-    return beginDestination + distance;
-}
-
-char *copyIf(char *beginSource, const char *endSource, char *beginDestination, int (*f)(int)){
-    long long fDistance = 0;
-    while (*beginSource != '\0' && beginSource != endSource)
-        if (f(*(beginSource++))){
-            memcpy(beginDestination++, beginSource - 1, sizeof(char));
-            fDistance++;
-        }
-
-    return beginDestination + fDistance;
-}
-
-char* copyIfReverse(char *rbeginSource, const char *rendSource, char *beginDestination, int (*f)(int)){
-    long long fDistance = rbeginSource - rendSource;
-    while (rbeginSource != rendSource)
-        if (f(*(rbeginSource--))){
-            memcpy(beginDestination, rbeginSource + 1, sizeof(char));
-            fDistance++;
-        }
-
-    return beginDestination + fDistance;
+    return 1;
 }
