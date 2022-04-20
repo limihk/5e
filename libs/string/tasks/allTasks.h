@@ -5,15 +5,20 @@
 #include "removeNonLetters.h"
 #include "removeExtraSpaces.h"
 #include "digitToStartWithoutChangingTheOrderOfTheWord.h"
-
+#include "replacingEachDigitWithSpaces.h"
+#include "replacingEachDigitWithSpaces.h"
+#include "searchFirstWord.h"
+#include "isWordsOrdered.h"
 
 
 void allTestsTasks() {
     test_removeNonLetters();
     test_removeExtraSpaces();
     test_digitToStartWithoutChangingTheOrderOfTheWord();
-
-
+    test_replacingEachDigitWithSpaces();
+    test_replacingEachDigitWithSpaces();
+    test_replace();
+    test_isWordsOrdered();
 }
 
 
