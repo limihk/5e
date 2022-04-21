@@ -15,7 +15,8 @@
 #include "reverseWordsInString.h"
 #include "getWordBeforeFirstWordWithA.h"
 #include "getLastWordInFirstStringInTheSecondString.h"
-
+#include "areEqualWordsInString.h"
+#include "deletePalindromes.h"
 void allTestsTasks() {
     test_removeNonLetters();
     test_removeExtraSpaces();
@@ -30,6 +31,8 @@ void allTestsTasks() {
     test_reverseWordsInString();
     testAll_getWordBeforeFirstWordWithA();
     test_getLastWordInFirstStringInTheSecondString();
+    test_areEqualWordsInString();
+    test_deletePalindromes();
 }
 
 
