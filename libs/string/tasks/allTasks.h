@@ -12,7 +12,9 @@
 #include "reverseWords.h"
 #include "countWordsPalindrome.h"
 #include "alternatingWordsFormTwoString.h"
-
+#include "reverseWordsInString.h"
+#include "getWordBeforeFirstWordWithA.h"
+#include "getLastWordInFirstStringInTheSecondString.h"
 
 void allTestsTasks() {
     test_removeNonLetters();
@@ -25,6 +27,9 @@ void allTestsTasks() {
     test_reverseWords();
     test_countWordsPalindrome();
     test_alternatingWordsFormTwoString();
+    test_reverseWordsInString();
+    testAll_getWordBeforeFirstWordWithA();
+    test_getLastWordInFirstStringInTheSecondString();
 }
 
 
